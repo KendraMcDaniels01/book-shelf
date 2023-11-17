@@ -8,8 +8,20 @@ import {
   Routes,
   Route
 } from "react-router-dom";
+import About from './About';
+
+
 
 class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      books: [],
+    }
+  }
+
+
+
   render() {
     return (
       <>
@@ -17,11 +29,14 @@ class App extends React.Component {
           <Header />
           <Routes>
             <Route 
-              exact path="/"
-              element={<BestBooks />}
-            >
+              path="/"
+              element={<BestBooks />}>
             </Route>
-            {/* PLACEHOLDER: add a route with a path of '/about' that renders the `About` component */}
+            <Route 
+              path="/About"
+              element={<About />}>
+            </Route>
+            
           </Routes>
           <Footer />
         </Router>
