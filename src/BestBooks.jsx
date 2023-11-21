@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
-import Carousel from 'react-bootstrap/Carousel'
+import Carousel from 'react-bootstrap/Carousel';
+import {Container, Form, Button} from 'react-bootstrap';
 
 
 class BestBooks extends React.Component {
@@ -30,6 +31,51 @@ class BestBooks extends React.Component {
     this.getAllBooks();
   }
 
+  // add book to db
+
+  // create object
+  handleBookSubmit = (event) =>{
+  event.preventDefault();
+  let bookObj = {
+    title: event.target.title.value,
+    description: event.target.description.value,
+    status: event.target.status.checked
+  }
+  this.postBook(bookObj)
+  }
+
+  // post object and update state
+  postBook = async (bookObj) => {
+    try {
+      let url = 'http://localhost:3001/books' // '${process.env.REACT_APP_SERVER}/books' is not working
+      let createdBookFromDB = await axios.post(url, bookObj)
+      this.setState({
+        books:[...this.state.books, createdBookFromDB.data]
+      })
+    }catch (error) {
+      console.log(error.message);
+    }
+  }
+
+
+  // delete object from DB
+
+  deleteBook = async (id) => {
+    try {
+      let url = 'http://localhost:3001/books/' + id; // '${process.env.REACT_APP_SERVER}/books' is not working
+      console.log(url);
+      await axios.delete(url);
+
+      let updatedBooks = this.state.books.filter(book => book._id !== id);
+
+      this.setState({
+        books: updatedBooks
+      })
+    } catch (error) {
+     console.log(error.message) 
+    }
+  }
+
   render() {
 
     return (
@@ -39,18 +85,37 @@ class BestBooks extends React.Component {
           <Carousel>
             {this.state.books.map(book => (
           <Carousel.Item key={book._id}>
-            <div>
+            <Carousel.Caption>
               <h3>{book.title}</h3>
               <p>Description: {book.description}</p>
+              <button onClick={() => this.deleteBook(book._id)}>Delete</button> 
+              </Carousel.Caption>
               <p>{book.status}</p>
-                     <img src= "https://images.unsplash.com/photo-1516979187457-637abb4f9353?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt= "image of a book" />
-            </div>
+                     <img src= "https://images.unsplash.com/photo-1516979187457-637abb4f9353?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt= "image of a book" height = "600"/>            
           </Carousel.Item>
   ))}
           </Carousel>
           ): (
             <h3>Book Collection Empty</h3>
           )}
+           
+        <Container>
+          <Form onSubmit = {this.handleBookSubmit} >
+          <Form.Group controlId="title">
+            <Form.Label>Title</Form.Label>
+            <Form.Control type="text" />
+          </Form.Group>
+          <Form.Group controlId="description">
+            <Form.Label>Descritpion</Form.Label>
+            <Form.Control type="text" />
+          </Form.Group>
+          <Form.Group controlId="status">
+            <Form.Label>Status</Form.Label>
+            <Form.Check type="checkbox" />
+          </Form.Group>
+          <Button type="submit">Add Book</Button>
+          </Form>
+        </Container>
       </>
     )
   }
