@@ -96,7 +96,7 @@ class BestBooks extends React.Component {
     try {
       let url = 'http://localhost:3001/books/' + bookObj._id; // '${process.env.REACT_APP_SERVER}/books' is not working
       let updatedBookFromAxios = await axios.put(url, bookObj);
-      let updatedBooks = this.books.map(existingBook => {
+      let updatedBooks = this.state.books.map(existingBook => {
         return existingBook._id === bookObj._id
         ? updatedBookFromAxios.data : existingBook
       });

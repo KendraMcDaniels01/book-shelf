@@ -9,6 +9,8 @@ import {
   Route
 } from "react-router-dom";
 import About from './About';
+import AuthButton from './AuthButton'
+
 
 
 
@@ -27,6 +29,7 @@ class App extends React.Component {
       <>
         <Router>
           <Header />
+          <AuthButton></AuthButton>
           <Routes>
             <Route 
               path="/"
